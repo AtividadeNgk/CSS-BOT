@@ -504,7 +504,7 @@ async def registro_menu_callback(update: Update, context: ContextTypes.DEFAULT_T
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            "🚀 <b>Como cadastrar na NGK Pay?</b> É simples! Basta seguir o tutorial:\n"
+            "🚀 <b>Como cadastrar na NGK Pay?</b> É simples! Basta seguir o tutorial:\n\n"
             "<b>1.</b> Crie um novo Bot no @Botfather\n"
             "<b>2.</b> Copie o Token do Bot\n"
             "<b>3.</b> Cole o Token aqui abaixo",
