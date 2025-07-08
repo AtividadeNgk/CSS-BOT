@@ -518,12 +518,17 @@ async def registro_menu_callback(update: Update, context: ContextTypes.DEFAULT_T
         user_id = query.from_user.id
         bots = manager.get_bots_by_owner(str(user_id))
         
+        # Botão para voltar ao menu (definido antes para usar junto com o texto)
+        keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data="registro_voltar_menu")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
         if not bots:
             await query.edit_message_text(
-                "📭 <b>Nenhum bot cadastrado</b>\n\n"
-                "Você ainda não possui bots cadastrados no sistema.\n"
-                "Use o botão 'CADASTRAR NOVO BOT' para adicionar seu primeiro bot!",
-                parse_mode='HTML'
+                "❌ <b>Nenhum bot cadastrado</b>\n\n"
+                "Você ainda não possui bots cadastrados no sistema. "
+                "Use o botão <b>Cadastrar Bot</b> para adicionar seu primeiro bot na NGK Pay.",
+                parse_mode='HTML',
+                reply_markup=reply_markup  # Adiciona o botão junto com o texto
             )
         else:
             bot_list = "🤖 <b>Seus Bots Cadastrados:</b>\n\n"
@@ -542,12 +547,12 @@ async def registro_menu_callback(update: Update, context: ContextTypes.DEFAULT_T
             
             bot_list += f"\n📊 <b>Total:</b> {len(bots)} bot(s)"
             
-            await query.edit_message_text(bot_list, parse_mode='HTML')
+            await query.edit_message_text(
+                bot_list, 
+                parse_mode='HTML',
+                reply_markup=reply_markup  # Adiciona o botão junto com o texto
+            )
         
-        # Botão para voltar ao menu
-        keyboard = [[InlineKeyboardButton("⬅️ VOLTAR", callback_data="registro_voltar_menu")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.message.edit_reply_markup(reply_markup)
         return REGISTRO_MENU
         
     elif query.data == "registro_substituir":
