@@ -470,7 +470,7 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
         f"🥷 Hora de colocar a caixa pra movimentar com o melhor <b>Bot de Pagamento do Telegram!</b>\n\n"
         "⚙️ <b>Sistema completo,</b> desde funcionalidades para uma maior conversão a taxas justas.\n\n"
-        "📌 O que você deseja fazer?"
+        "O que você deseja fazer?"
     )
     
     # Botões do menu
