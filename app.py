@@ -399,13 +399,9 @@ async def receive_token_register(update: Update, context: ContextTypes.DEFAULT_T
         query = update.callback_query
         await query.answer()
         
-        if query.data == "registro_cancelar":
-            await query.edit_message_text(
-                "❌ <b>Cadastro cancelado!</b>\n\n"
-                "Você pode iniciar um novo cadastro a qualquer momento.",
-                parse_mode='HTML'
-            )
-            return ConversationHandler.END
+        if query.data == "registro_cancelar_silencioso":
+            # Volta para o menu principal sem mensagem
+            return await mostrar_menu_principal(query.message, query.from_user)
     
     # Processa o token enviado
     if update.message and update.message.text:
@@ -499,112 +495,113 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return REGISTRO_MENU
 
 async def registro_menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-   query = update.callback_query
-   await query.answer()
-   
-   if query.data == "registro_cadastrar":
-       # Inicia processo de cadastro
-       keyboard = [[InlineKeyboardButton("❌ CANCELAR", callback_data="registro_cancelar")]]
-       reply_markup = InlineKeyboardMarkup(keyboard)
-       
-       await query.edit_message_text(
-           "📝 <b>Cadastro de Novo Bot</b>\n\n"
-           "Por favor, envie o token do seu bot.\n\n"
-           "💡 <i>Você pode obter o token com o @BotFather</i>",
-           parse_mode='HTML',
-           reply_markup=reply_markup
-       )
-       return REGISTRO_AGUARDANDO_TOKEN
-       
-   elif query.data == "registro_ver_bots":
-       # Mostra lista de bots do usuário
-       user_id = query.from_user.id
-       bots = manager.get_bots_by_owner(str(user_id))
-       
-       if not bots:
-           await query.edit_message_text(
-               "📭 <b>Nenhum bot cadastrado</b>\n\n"
-               "Você ainda não possui bots cadastrados no sistema.\n"
-               "Use o botão 'CADASTRAR NOVO BOT' para adicionar seu primeiro bot!",
-               parse_mode='HTML'
-           )
-       else:
-           bot_list = "🤖 <b>Seus Bots Cadastrados:</b>\n\n"
-           for bot in bots:
-               bot_id = bot[0]
-               bot_token = bot[1]
-               
-               # Verifica se o bot está ativo
-               bot_details = manager.check_bot_token(bot_token)
-               if bot_details and bot_details.get('result'):
-                   bot_username = bot_details['result'].get('username', 'INDEFINIDO')
-                   bot_name = bot_details['result'].get('first_name', 'Sem nome')
-                   bot_list += f"• <b>{bot_name}</b> - @{bot_username}\n"
-               else:
-                   bot_list += f"• Bot ID: {bot_id} (Token inválido)\n"
-           
-           bot_list += f"\n📊 <b>Total:</b> {len(bots)} bot(s)"
-           
-           await query.edit_message_text(bot_list, parse_mode='HTML')
-       
-       # Botão para voltar ao menu
-       keyboard = [[InlineKeyboardButton("⬅️ VOLTAR", callback_data="registro_voltar_menu")]]
-       reply_markup = InlineKeyboardMarkup(keyboard)
-       await query.message.edit_reply_markup(reply_markup)
-       return REGISTRO_MENU
-       
-   elif query.data == "registro_substituir":
-       # Busca bots do usuário
-       user_id = query.from_user.id
-       bots = manager.get_bots_by_owner(str(user_id))
-       
-       if not bots:
-           await query.edit_message_text(
-               "📭 <b>Nenhum bot para substituir</b>\n\n"
-               "Você precisa ter pelo menos um bot cadastrado para usar esta função.",
-               parse_mode='HTML'
-           )
-           
-           # Botão para voltar ao menu
-           keyboard = [[InlineKeyboardButton("⬅️ VOLTAR", callback_data="registro_voltar_menu")]]
-           reply_markup = InlineKeyboardMarkup(keyboard)
-           await query.message.edit_reply_markup(reply_markup)
-           return REGISTRO_MENU
-       
-       # Monta lista de bots para escolher
-       await query.edit_message_text(
-           "🔄 <b>Substituir Bot</b>\n\n"
-           "Selecione o bot que deseja substituir:\n\n"
-           "⚠️ <i>O bot selecionado será desativado e suas configurações "
-           "serão transferidas para o novo bot.</i>",
-           parse_mode='HTML'
-       )
-       
-       keyboard = []
-       for bot in bots:
-           bot_id = bot[0]
-           bot_token = bot[1]
-           
-           # Pega info do bot
-           bot_details = manager.check_bot_token(bot_token)
-           if bot_details and bot_details.get('result'):
-               bot_username = bot_details['result'].get('username', 'INDEFINIDO')
-               bot_name = bot_details['result'].get('first_name', 'Sem nome')
-               button_text = f"{bot_name} (@{bot_username})"
-           else:
-               button_text = f"Bot ID: {bot_id} (Offline)"
-           
-           keyboard.append([InlineKeyboardButton(button_text, callback_data=f"substituir_bot_{bot_id}")])
-       
-       keyboard.append([InlineKeyboardButton("❌ CANCELAR", callback_data="registro_voltar_menu")])
-       reply_markup = InlineKeyboardMarkup(keyboard)
-       await query.message.edit_reply_markup(reply_markup)
-       
-       return REGISTRO_SELECIONAR_BOT
-       
-   elif query.data == "registro_voltar_menu":
-       # Volta ao menu principal
-       return await mostrar_menu_principal(query.message, query.from_user)
+    query = update.callback_query
+    await query.answer()
+    
+    if query.data == "registro_cadastrar":
+        # Inicia processo de cadastro
+        keyboard = [[InlineKeyboardButton("❌ Cancelar", callback_data="registro_cancelar_silencioso")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            "📝 <b>Instruções para Cadastro de Bot</b>\n\n"
+            "1. Crie um novo bot no @BotFather\n"
+            "2. Copie o token do bot\n"
+            "3. Cole o token aqui para cadastrar",
+            parse_mode='HTML',
+            reply_markup=reply_markup
+        )
+        return REGISTRO_AGUARDANDO_TOKEN
+        
+    elif query.data == "registro_ver_bots":
+        # Mostra lista de bots do usuário
+        user_id = query.from_user.id
+        bots = manager.get_bots_by_owner(str(user_id))
+        
+        if not bots:
+            await query.edit_message_text(
+                "📭 <b>Nenhum bot cadastrado</b>\n\n"
+                "Você ainda não possui bots cadastrados no sistema.\n"
+                "Use o botão 'CADASTRAR NOVO BOT' para adicionar seu primeiro bot!",
+                parse_mode='HTML'
+            )
+        else:
+            bot_list = "🤖 <b>Seus Bots Cadastrados:</b>\n\n"
+            for bot in bots:
+                bot_id = bot[0]
+                bot_token = bot[1]
+                
+                # Verifica se o bot está ativo
+                bot_details = manager.check_bot_token(bot_token)
+                if bot_details and bot_details.get('result'):
+                    bot_username = bot_details['result'].get('username', 'INDEFINIDO')
+                    bot_name = bot_details['result'].get('first_name', 'Sem nome')
+                    bot_list += f"• <b>{bot_name}</b> - @{bot_username}\n"
+                else:
+                    bot_list += f"• Bot ID: {bot_id} (Token inválido)\n"
+            
+            bot_list += f"\n📊 <b>Total:</b> {len(bots)} bot(s)"
+            
+            await query.edit_message_text(bot_list, parse_mode='HTML')
+        
+        # Botão para voltar ao menu
+        keyboard = [[InlineKeyboardButton("⬅️ VOLTAR", callback_data="registro_voltar_menu")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.message.edit_reply_markup(reply_markup)
+        return REGISTRO_MENU
+        
+    elif query.data == "registro_substituir":
+        # Busca bots do usuário
+        user_id = query.from_user.id
+        bots = manager.get_bots_by_owner(str(user_id))
+        
+        if not bots:
+            await query.edit_message_text(
+                "📭 <b>Nenhum bot para substituir</b>\n\n"
+                "Você precisa ter pelo menos um bot cadastrado para usar esta função.",
+                parse_mode='HTML'
+            )
+            
+            # Botão para voltar ao menu
+            keyboard = [[InlineKeyboardButton("⬅️ VOLTAR", callback_data="registro_voltar_menu")]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.message.edit_reply_markup(reply_markup)
+            return REGISTRO_MENU
+        
+        # Monta lista de bots para escolher
+        await query.edit_message_text(
+            "🔄 <b>Substituir Bot</b>\n\n"
+            "Selecione o bot que deseja substituir:\n\n"
+            "⚠️ <i>O bot selecionado será desativado e suas configurações "
+            "serão transferidas para o novo bot.</i>",
+            parse_mode='HTML'
+        )
+        
+        keyboard = []
+        for bot in bots:
+            bot_id = bot[0]
+            bot_token = bot[1]
+            
+            # Pega info do bot
+            bot_details = manager.check_bot_token(bot_token)
+            if bot_details and bot_details.get('result'):
+                bot_username = bot_details['result'].get('username', 'INDEFINIDO')
+                bot_name = bot_details['result'].get('first_name', 'Sem nome')
+                button_text = f"{bot_name} (@{bot_username})"
+            else:
+                button_text = f"Bot ID: {bot_id} (Offline)"
+            
+            keyboard.append([InlineKeyboardButton(button_text, callback_data=f"substituir_bot_{bot_id}")])
+        
+        keyboard.append([InlineKeyboardButton("❌ CANCELAR", callback_data="registro_voltar_menu")])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.message.edit_reply_markup(reply_markup)
+        
+        return REGISTRO_SELECIONAR_BOT
+        
+    elif query.data == "registro_voltar_menu":
+        # Volta ao menu principal
+        return await mostrar_menu_principal(query.message, query.from_user)
 
 async def mostrar_menu_principal(message, user):
     """Função auxiliar para mostrar o menu principal"""
