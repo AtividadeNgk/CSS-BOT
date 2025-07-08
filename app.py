@@ -608,18 +608,21 @@ async def mostrar_menu_principal(message, user):
     user_name = user.first_name
     
     welcome_text = (
-        f"👋 Olá, {user_name}!\n\n"
-        "🤖 <b>Sistema de Gerenciamento de Bots</b>\n\n"
-        "Aqui você pode cadastrar e gerenciar seus bots do Telegram "
-        "de forma simples e rápida.\n\n"
-        "📌 <b>O que você deseja fazer?</b>"
+        f"<b>Bem-vindo</b> {user_name} 🥂\n\n"
+        f"🥷 Hora de colocar a caixa pra movimentar com o melhor <b>Bot de Pagamento do Telegram!</b>\n\n"
+        "⚙️ <b>Sistema completo,</b> desde funcionalidades para uma maior conversão a taxas justas.\n\n"
+        "O que você deseja fazer?"
     )
     
     keyboard = [
-        [InlineKeyboardButton("➕ CADASTRAR NOVO BOT", callback_data="registro_cadastrar")],
+        [InlineKeyboardButton("📦 𝗖𝗮𝗱𝗮𝘀𝘁𝗿𝗮𝗿 𝗕𝗼𝘁", callback_data="registro_cadastrar")],
         [
-            InlineKeyboardButton("📋 VER BOTS", callback_data="registro_ver_bots"),
-            InlineKeyboardButton("🔄 SUBSTITUIR", callback_data="registro_substituir")
+            InlineKeyboardButton("👤 𝗠𝗲𝘂𝘀 𝗕𝗼𝘁𝘀", callback_data="registro_ver_bots"),
+            InlineKeyboardButton("♻️ 𝗧𝗿𝗼𝗰𝗮𝗿 𝗧𝗼𝗸𝗲𝗻", callback_data="registro_substituir")
+        ],
+        [
+            InlineKeyboardButton("💰 𝗧𝗮𝘅𝗮𝘀", callback_data="registro_taxas"),
+            InlineKeyboardButton("🙋‍♂ 𝗔𝗷𝘂𝗱𝗮", callback_data="registro_ajuda")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
