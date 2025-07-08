@@ -844,7 +844,7 @@ def main():
             ],
             REGISTRO_AGUARDANDO_TOKEN: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, receive_token_register),
-                CallbackQueryHandler(receive_token_register, pattern="^registro_cancelar$"),
+                CallbackQueryHandler(receive_token_register, pattern="^registro_cancelar_silencioso$"),
             ],
             REGISTRO_SELECIONAR_BOT: [
                 CallbackQueryHandler(registro_selecionar_bot_callback),
