@@ -504,10 +504,10 @@ async def registro_menu_callback(update: Update, context: ContextTypes.DEFAULT_T
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            "📝 <b>Instruções para Cadastro de Bot</b>\n\n"
-            "1. Crie um novo bot no @BotFather\n"
-            "2. Copie o token do bot\n"
-            "3. Cole o token aqui para cadastrar",
+            "🚀 <b>Como cadastrar na NGK Pay?</b> É simples! Basta seguir o tutorial:\n"
+            "<b>1.</b> Crie um novo Bot no @Botfather\n"
+            "<b>2.</b> Copie o Token do Bot\n"
+            "<b>3.</b> Cole o Token aqui abaixo",
             parse_mode='HTML',
             reply_markup=reply_markup
         )
