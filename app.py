@@ -468,11 +468,9 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Texto de apresentação
     welcome_text = (
-        f"👋 Olá, {user_name}!\n\n"
-        "🤖 <b>Sistema de Gerenciamento de Bots</b>\n\n"
-        "Aqui você pode cadastrar e gerenciar seus bots do Telegram "
-        "de forma simples e rápida.\n\n"
-        "📌 <b>O que você deseja fazer?</b>"
+        f"🥷 Hora de colocar a caixa pra movimentar com o melhor <b>Bot de Pagamento do Telegram!</b>\n\n"
+        "⚙️ <b>Sistema completo,</b> desde funcionalidades para uma maior conversão a taxas justas.\n\n"
+        "📌 O que você deseja fazer?"
     )
     
     # Botões do menu
