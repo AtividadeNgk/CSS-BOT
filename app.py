@@ -468,6 +468,7 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Texto de apresentação
     welcome_text = (
+        f"<b>Bem-vindo</b> {user_name} 🥂\n\n"
         f"🥷 Hora de colocar a caixa pra movimentar com o melhor <b>Bot de Pagamento do Telegram!</b>\n\n"
         "⚙️ <b>Sistema completo,</b> desde funcionalidades para uma maior conversão a taxas justas.\n\n"
         "O que você deseja fazer?"
@@ -479,6 +480,10 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton("👤 𝗠𝗲𝘂𝘀 𝗕𝗼𝘁𝘀", callback_data="registro_ver_bots"),
             InlineKeyboardButton("♻️ 𝗧𝗿𝗼𝗰𝗮𝗿 𝗧𝗼𝗸𝗲𝗻", callback_data="registro_substituir")
+        ],
+        [
+            InlineKeyboardButton("💰 𝗧𝗮𝘅𝗮𝘀", callback_data="registro_taxas"),
+            InlineKeyboardButton("🙋‍♂ 𝗔𝗷𝘂𝗱𝗮", callback_data="registro_ajuda")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -488,6 +493,8 @@ async def start_func(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='HTML',
         reply_markup=reply_markup
     )
+    
+    return REGISTRO_MENU
     
     return REGISTRO_MENU
 
